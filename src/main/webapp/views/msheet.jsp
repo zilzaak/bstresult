@@ -32,7 +32,6 @@ box-sizing:border-box;
 width:1000px; 
 font-weight:700;
  
-
 }
 
 table td{
@@ -174,7 +173,7 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 <br/>
 
-<div style="height:400px;margin-left:4%;margin-right:4%;font-size:1.2em;">
+<div style="height:450px;margin-left:4%;margin-right:4%;font-size:1.2em;">
 <table  align="center" border="1" style="width:100.70%;" >
 <tr>
 <th>Subjects</th>

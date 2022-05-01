@@ -5,7 +5,7 @@ pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>all result</title>
+<title>admin result</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<c:url value="/static/theme/bootstrap431.css" /> " rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -140,9 +140,7 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <div style="background-color:black;color:white;padding:10px;" align="center" ng-if="gotresult!=null">
 <h4 style="color:green;">note::{{gotresult.sms}}</h4>
 <ul style="list-style-type:none;">
-<li>Technology::{{p3.dept}}</li>
-<li>roll no::{{p3.rollno}}</li>
-<li>Session::{{gotresult.session}}</li>
+<li>result of {{dps[0].studentname}}</li>
 <li>reg no::{{gotresult.regno}}</li>
 <li>Result::{{gotresult.gpa}} (out of 4)</li>
 <li></li>
@@ -160,7 +158,7 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 </tr>
 
 <tr ng-repeat="x in dps">
-<td>{{x.subcode}}</td>
+<td>({{x.subcode}}){{x.subname}}</td>
 <td>{{x.fullmark}}</td>
 <td>{{x.total}}</td>
 <td>{{x.grade}}</td>

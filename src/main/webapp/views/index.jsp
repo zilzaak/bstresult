@@ -129,17 +129,16 @@ background-color:steelblue;
 
 <div style="background-color:#66CDAA;padding:10px;" align="center" ng-if="gotresult!=null">
 <h4 style="color:green;">note::{{gotresult.sms}}</h4>
+
 <ul style="list-style-type:none;">
-<li>Technology::{{p3.dept}}</li>
-<li>roll no::{{p3.rollno}}</li>
-<li>Session::{{gotresult.session}}</li>
+<li style="color:red;">Result of:-- {{dps[0].studentname}}</li>
 <li>reg no::{{gotresult.regno}}</li>
-<li style="color:white;font-size:1.5em;">Result::{{gotresult.gpa}} (out of 4)</li>
-<li></li>
+<li style="color:red;font-size:1.5em;">Result::{{gotresult.gpa}} (out of 4)</li>
 </ul>
 </div>
 
 <div style="background-color:skyblue;color:darkslategrey;padding:10px;" align="center">
+
 <table border="1" align="center" >
 <tr ng-if="dps.length>0">
 <th>subject</th>
@@ -150,7 +149,7 @@ background-color:steelblue;
 </tr>
 
 <tr ng-repeat="x in dps">
-<td>{{x.subcode}}</td>
+<td>({{x.subcode}}) {{x.subname}}</td>
 <td>{{x.fullmark}}</td>
 <td>{{x.total}}</td>
 <td>{{x.grade}}</td>

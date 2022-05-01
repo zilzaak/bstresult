@@ -223,7 +223,7 @@ Practical
 	
 <tr ng-repeat="x in allres">
 	<td>{{$index+fromr}}</td>
-	<td>{{x.name}}</td>
+	<td>{{x.studentname}}</td>
 	
 	<td style="width:345px;height:40px;">
 	
