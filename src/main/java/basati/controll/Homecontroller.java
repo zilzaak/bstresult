@@ -53,8 +53,7 @@ public class Homecontroller {
 	@RequestMapping("/admin")
 	
 	public String  admin() {
-		
-		return "adminset";
+	return "adminset";
 	}
 	
 	@PostMapping("/setting")
@@ -267,8 +266,19 @@ return new ResponseEntity<Admin>(forgot,HttpStatus.OK);
 		 List<Department> dl2=new ArrayList<Department>();
 		 dlst2=dl2;
 		List<Resultst> lst=new ArrayList<>();
-		List<Department> dlst=drr.findBySessionAndDeptAndSemesterOrderByRollnoAsc(dp.getSession(),dp.getDept(),dp.getSemester());
+		List<Department> dlst=new ArrayList<>();
+			
+		
+		if(dp.getExamtype().contentEquals("regular")) {
+			 dlst =drr.findByExamtypeAndSessionAndDeptAndSemesterOrderByRollnoAsc(dp.getExamtype(),
+						dp.getSession(),dp.getDept(),dp.getSemester());
+		}
 
+		if(!dp.getExamtype().contentEquals("regular")){
+	dlst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterOrderByRollnoAsc(dp.getExamtype(),dp.getYear(),
+	dp.getSession(),dp.getDept(),dp.getSemester());
+
+		}	
 		
 		for(Department d : dlst) {
 			
@@ -307,8 +317,8 @@ return new ResponseEntity<Admin>(forgot,HttpStatus.OK);
 	
 
 public Resultst findresult( Department dp){
-
-List<Department> lst = drr.findByDeptAndSemesterAndRollno(dp.getDept(),dp.getSemester(),dp.getRollno());
+List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndRollno(dp.getExamtype(),dp.getYear(),dp.getSession(),
+		dp.getDept(),dp.getSemester(),dp.getRollno());
 float totalcredit=0;
 float sum=0;
 float gpa=0; 
@@ -519,7 +529,8 @@ return new ResponseEntity<Admin>(ad,HttpStatus.OK);
 @PutMapping("/updatede")
 
 public ResponseEntity<Department> updatede(@RequestBody Department fdept) {
-	List<Department> lst = drr.findBySessionAndDeptAndSemester(fdept.getSession(), fdept.getDept(),fdept.getSemester());
+	List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemester(
+			fdept.getExamtype(),fdept.getYear(),fdept.getSession(), fdept.getDept(),fdept.getSemester());
 
 for(Department d : lst) {
 	d.setYear(fdept.getYear());
@@ -560,18 +571,27 @@ return new ResponseEntity<Admin>(ad,HttpStatus.OK);
 
 
 @PostMapping("/subtcpc")
-
 public ResponseEntity<List<Department>> subtcpc(@RequestBody Department dp) {
-
-	List<Department> lst = drr.findBySessionAndDeptAndSemesterAndSubcodeOrderByRollnoAsc(dp.getSession(), 
+	List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndSubcodeOrderByRollnoAsc(
+	dp.getExamtype(),dp.getYear(),dp.getSession(), 
 	dp.getDept(), dp.getSemester(),dp.getSubcode());
-
 return new ResponseEntity<List<Department>>(lst,HttpStatus.OK);
+
 
 }
 
 
+@RequestMapping("/parvezupdateit")
+public void extracheck() {
+List<Department> lst = drr.findAll();
+for(Department d : lst) {
+	d.setExamtype("regular");
+	d.setYear(2021);
+	drr.save(d);
+}
 
+
+}
 
 
 

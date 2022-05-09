@@ -1,7 +1,5 @@
 package basati.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -89,6 +87,7 @@ public String getDept() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 public int getDid() {
@@ -114,26 +113,24 @@ private float tf;
 private float pf;
 private float total;
 private float fullmark;
-private String stringdate;
 private String grade;
 private float gradepoint;
 private String regno;
-
 private String duration;
 private int year;
 private String pub;
 private String issue;
-public String getRegno() {
-	return regno;
-}
-public void setRegno(String regno) {
-	this.regno = regno;
-}
+private float tcv;
+private float pcv;
+private float tfv;
+private float pfv;
+private String examtype;
 
 
 public Department(String dept, String semester, String subname, String subcode, String session, String studentname,
-		String rollno, float tc, float pc, float tf, float pf, float total, float fullmark, String stringdate,
-		String grade, float gradepoint, String regno, String duration, int year, String pub, String issue, Date date,float credit) {
+		String rollno, float tc, float credit, float pc, float tf, float pf, float total, float fullmark, String grade,
+		float gradepoint, String regno, String duration, int year, String pub, String issue, float tcv, float pcv,
+		float tfv, float pfv, String examtype) {
 	super();
 	this.dept = dept;
 	this.semester = semester;
@@ -143,12 +140,12 @@ public Department(String dept, String semester, String subname, String subcode, 
 	this.studentname = studentname;
 	this.rollno = rollno;
 	this.tc = tc;
+	this.credit = credit;
 	this.pc = pc;
 	this.tf = tf;
 	this.pf = pf;
 	this.total = total;
 	this.fullmark = fullmark;
-	this.stringdate = stringdate;
 	this.grade = grade;
 	this.gradepoint = gradepoint;
 	this.regno = regno;
@@ -156,10 +153,51 @@ public Department(String dept, String semester, String subname, String subcode, 
 	this.year = year;
 	this.pub = pub;
 	this.issue = issue;
-	this.date = date;
-	this.credit=credit;
+	this.tcv = tcv;
+	this.pcv = pcv;
+	this.tfv = tfv;
+	this.pfv = pfv;
+	this.examtype = examtype;
+}
+public String getExamtype() {
+	return examtype;
+}
+public void setExamtype(String examtype) {
+	this.examtype = examtype;
+}
+public String getRegno() {
+	return regno;
+}
+public void setRegno(String regno) {
+	this.regno = regno;
 }
 
+
+
+public float getTcv() {
+	return tcv;
+}
+public void setTcv(float tcv) {
+	this.tcv = tcv;
+}
+public float getPcv() {
+	return pcv;
+}
+public void setPcv(float pcv) {
+	this.pcv = pcv;
+}
+public float getTfv() {
+	return tfv;
+}
+public void setTfv(float tfv) {
+	this.tfv = tfv;
+}
+public float getPfv() {
+	return pfv;
+}
+public void setPfv(float pfv) {
+	this.pfv = pfv;
+}
 public float getCredit() {
 	return credit;
 }
@@ -179,27 +217,6 @@ public void setGradepoint(float gradepoint) {
 	this.gradepoint = gradepoint;
 }
 
-
-private Date date;
-
-
-
-public String getStringdate() {
-	return stringdate;
-}
-
-public void setStringdate(String stringdate) {
-	this.stringdate = stringdate;
-}
-
-
-public Date getDate() {
-	return date;
-}
-
-public void setDate(Date date){
-	this.date = date;
-}
 
 public float getFullmark() {
 	return fullmark;

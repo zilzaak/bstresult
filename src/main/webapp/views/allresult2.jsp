@@ -26,44 +26,106 @@ module.controller("ar",function($scope,$http){
 	$scope.sublist=[];
 
 	$scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
+	$scope.examtype=["--","regular","referred","irregular"];
+	$scope.p={"examtype":"","year":null,"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
 
-	$scope.p={"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
-	var m1={"tc":"","tf":"","pc":"","pf":""};
-	var m2={"tc":"","tf":"","pc":"","pf":""};
-	var m3={"tc":"","tf":"","pc":"","pf":""};
-	var m4={"tc":"","tf":"","pc":"","pf":""};
-	var m5={"tc":"","tf":"","pc":"","pf":""};
-	var m6={"tc":"","tf":"","pc":"","pf":""};
-	var m7={"tc":"","tf":"","pc":"","pf":""};
-	var m8={"tc":"","tf":"","pc":"","pf":""};
-	var m9={"tc":"","tf":"","pc":"","pf":""};
-	var m10={"tc":"","tf":"","pc":"","pf":""};
-	$scope.sublist.push(m1); $scope.sublist.push(m2);$scope.sublist.push(m3);$scope.sublist.push(m4);
-	$scope.sublist.push(m5); $scope.sublist.push(m6);$scope.sublist.push(m7);$scope.sublist.push(m8);
-	$scope.sublist.push(m9);$scope.sublist.push(m10);
+
 	$scope.fi=1;
 	$scope.ti=null;
 	$scope.tti=null;
 	
 	$scope.allres=[];
 	$scope.allr=[];
-	$scope.getall=function(){
-     
-		$http({ 
-			method:"POST" , 
-			url:"${pageContext.request.contextPath}/tabresult", 
-		  	data:angular.toJson($scope.p),
-		    headers:{"Content-Type":"application/json"}	
-			
-		        }).then(function(response){
-		        	
-		        	$scope.allr=response.data;
-		        	$scope.allres=response.data;
-		        	$scope.tti=response.data.length;
-		        		        	})	
-		
 	
+$scope.orsub=[];
+
+var a1={"subcode":""};
+var a2={"subcode":""};
+var a3={"subcode":""};
+
+$scope.orsub.push(a1,a2,a3);
+
+$scope.addit=function(i){
+	var a={"subcode":""};
+$scope.orsub.splice(i,0,a);	
+	
+}
+
+$scope.delit=function(i){
+	$scope.orsub.splice(i,1);		
+	
+}
+
+
+$scope.chtype=function(){
+	
+	if($scope.p.examtype=="irregular" || $scope.p.examtype=="referred"){
+		document.getElementById("year").style.display="block";
+		
 	}
+	if($scope.p.examtype=="regular" || $scope.p.examtype=="--"){
+		document.getElementById("year").style.display="none";	
+		
+	}	
+	
+}
+
+
+
+	$scope.getall=function(){
+		
+		$scope.tabhelper={"dp":$scope.p,"orsub":$scope.orsub};
+		
+		if($scope.p.examtype!="" || $scope.p.examtype!="--"){
+			
+			if($scope.p.examtype=="regular"){
+				
+				$http({ 
+					method:"POST" , 
+					url:"${pageContext.request.contextPath}/tabresult", 
+				  	data:angular.toJson($scope.tabhelper),
+				    headers:{"Content-Type":"application/json"}	
+					
+				        }).then(function(response){
+				            $scope.allr=response.data;
+				        	$scope.allres=response.data;
+				        	$scope.tti=response.data.length;
+				        		        	})		
+				
+			}	
+			
+			
+			
+			
+			if($scope.p.examtype!="regular"){
+				
+			if($scope.p.year==null){
+				alert("select exam year ");
+			}	
+				
+			if($scope.p.year!=null){
+				
+				$http({ 
+					method:"POST" , 
+					url:"${pageContext.request.contextPath}/tabresult", 
+				  	data:angular.toJson($scope.tabhelper),
+				    headers:{"Content-Type":"application/json"}	
+					
+				        }).then(function(response){
+				            $scope.allr=response.data;
+				        	$scope.allres=response.data;
+				        	$scope.tti=response.data.length;
+				        		        	})	
+				
+
+			}		
+						        	
+			}			
+		}
+		
+			}
+	
+	
 	
 	$scope.limitshow=function(){
 		$scope.allres=[];
@@ -89,10 +151,7 @@ module.controller("ar",function($scope,$http){
 	
 	
 	
-	
-$scope.hidesh=function(){
-	document.getElementById("sh").style.display="none";
-}	
+
 	
 $scope.checkdept=function(t){
 	
@@ -113,9 +172,6 @@ $scope.checkdept=function(t){
 	
 	
 }
-
-
-
 
 
 });
@@ -223,7 +279,13 @@ Students</th>
 <th ng-repeat="dp in allres[0].dps" style="width:8%;height:105px;">  
 <table border="1" style="height:100%;width:100%;">
 <tr>
-<th style="width:31%;">TC-<br/>{{sublist[$index].tc}}</th><th style="width:31%;">TF-<br/>{{sublist[$index].tf}}</th>
+<th style="width:31%;">TC-<br/> <p ng-if="dp.tcv<1">--</p> <p ng-if="dp.tcv>0">{{dp.tcv}}</p>
+
+</th>
+
+<th style="width:31%;">TF-<br/> <p ng-if="dp.tfv<1">--</p> <p ng-if="dp.tfv>0">{{dp.tfv}}</p>
+
+</th>
 
 <th>
 <table style="width:100%;">
@@ -235,7 +297,15 @@ Students</th>
 
 </tr>
 <tr>
-<th style="width:31%;">PC-<br/>{{sublist[$index].pc}}</th><th style="width:31%;">PF-<br/>{{sublist[$index].pf}}</th><th>LETTER<br/>GRADE</th>
+<th style="width:31%;">PC-<br/> <p ng-if="dp.pcv<1">--</p> <p ng-if="dp.pcv>0">{{dp.pcv}}</p>
+
+</th>
+
+<th style="width:31%;">PF-<br/> <p ng-if="dp.pfv<1">--</p> <p ng-if="dp.pfv>0">{{dp.pfv}}</p>
+
+</th>
+
+<th>LETTER<br/>GRADE</th>
 </tr>
 </table>
 </th>
@@ -258,9 +328,6 @@ STATUS
 </div>
 </th>
 </tr>
-
-
-
 
 
 <tr style="height:105px;" ng-repeat="ps in allres">
@@ -355,18 +422,14 @@ STATUS
 		
 		
 		
-
-
-
-
-
-	
-	
+		
+			
 	<br/>
 	<br/>
 		<div id="sh" align="center" style="margin-top:1000px;background-color:skyblue;margin-left:50px;margin-right:50px;margin-bottom:200px;padding-bottom:50px;">
 		<br/>
 		<br/>
+		
 	<div align="center" class="row" style="background-color:ghostwhite;padding:15px;" >
 		<div class="col">
 			<b style="color:green;">total number of result record's={{tti}}</b> <br/>
@@ -380,44 +443,55 @@ STATUS
 	<br/>
 	<table border="1" align="center" >
 		<tr>
+	<th>exam type</th>
 	<th>session</th>
 	<th>department</th>
 	<th>semseter</th>
 	</tr>
 		<tr>
-	<td><select ng-model="p.session"   ng-options="c for c in sch"></select></td>
+    <td><select ng-model="p.examtype"   ng-options="c for c in examtype" ng-change="chtype()"></select></td>
+   	<td><select ng-model="p.session"   ng-options="c for c in sch"></select></td>
 	<td><select ng-model="p.dept"      ng-options="c for c in khan2"></select></td>
 	<td><select ng-model="p.semester"  ng-options="c for c in khan1"></select></td>
 	</tr>
 	
 	</table>
-		
+	<br/>
+			
+<br/>
+<div id="year" style="display:none;">  exam year:- <input type="number"  ng-model="p.year"  /></div>
+<br/>
+<table align="center;" border="1">
+<tr>
+<th>serial no</th>
+<th>subject code</th>
+<th>add/remove</th>
+</tr>
+<tr ng-repeat="x in orsub">
+
+<td>{{$index+1}}</td>
+<td><input type="text" ng-model="x.subcode" /></td>
+<td>	
+<button ng-click="addit($index)">add</button>
+<button ng-click="delit($index)">delete</button>
+</td>
+</tr>
+</table>
+<br/>
 <br/>
 	<div align="center" class="row" >
-		<div class="col">
-	<button class="btn btn-sm btn-dark" ng-click="hidesh()">hide unneccessary part</button>
-	</div>
 	<div class="col" style="text-align:left;">
 	<button ng-click="getall();" class="btn btn-sm btn-success" style="margin-left:35%;">submit</button>
 	</div>
 	</div>
 	<br/>
 	
-<table border="1">
-<tr ng-if="allr.length>0">
-<th>SL NO</th><th>subject name<th>tc</th><th>tf</th><th>pc</th><th>pf</th>
-</tr>
-<tr ng-if="allr.length>0" ng-repeat="x in allr[0].dps">
-<td>{{$index+1}}</td>
-<td>{{x.subname}}</td>
-<td ><input style="width:80px;" type="text" ng-model="sublist[$index].tc"/></td>
-<td><input style="width:80px;" type="text" ng-model="sublist[$index].tf"/></td>
-<td><input style="width:80px;" type="text" ng-model="sublist[$index].pc"/></td>
-<td><input style="width:80px;" type="text" ng-model="sublist[$index].pf"/></td>
-</tr>
-</table>	
+	
 	
 	</div>
+	
+
+
 
 </body>
 </html>

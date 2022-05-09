@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import basati.model.Department;
 import basati.model.Helperr;
+import basati.model.Orsub;
 import basati.model.Resultst;
+import basati.model.Tabulationhelper;
 import basati.repo.Departmentrepo;
 
 @Controller
@@ -42,11 +44,11 @@ public class Tabulation {
 	}
 	
 
-	
-	
 public Resultst findresult( Department dp){
 	Resultst rs = new Resultst();
-List<Department> lst = drr.findBySessionAndDeptAndSemesterAndRollno(dp.getSession(),dp.getDept(),dp.getSemester(),dp.getRollno());
+List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndRollno(
+dp.getExamtype(),dp.getYear(),		
+		dp.getSession(),dp.getDept(),dp.getSemester(),dp.getRollno());
 float totalcredit=0;float sum=0;float gpa=0; 
 DecimalFormat dfrmt = new DecimalFormat();
 dfrmt.setMaximumFractionDigits(2);
@@ -89,19 +91,29 @@ rs.setDept(dp.getDept()); rs.setName(dp.getStudentname());
 	
 
 
-
-
-
-
-	@PostMapping("/tabresult")
-	public ResponseEntity<List<Helperr>> getallresult(@RequestBody Department dp) {
-	
-		 List<Department> dl2=new ArrayList<Department>();
-		 dlst2=dl2;
-		List<Helperr> helplst=new ArrayList<Helperr>();
-		List<Department> dlst=drr.findBySessionAndDeptAndSemesterOrderByRollnoAsc(dp.getSession(),dp.getDept(),dp.getSemester());
-
+@PostMapping("/tabresult")
+	public ResponseEntity<List<Helperr>> getallresult(@RequestBody Tabulationhelper th) {
+		Department dp=th.getDp(); //assigning the dp value for search or filter student 
 		
+	    List<Department> dl2=new ArrayList<Department>();
+		dlst2=dl2;
+		List<Helperr> helplst = new ArrayList<Helperr>();
+		List<Department> dlst=new ArrayList<Department>();
+		
+	
+		if(!dp.getExamtype().contentEquals("regular")){
+			dlst=drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterOrderByRollnoAsc(dp.getExamtype(),dp.getYear(),
+				dp.getSession(),dp.getDept(),dp.getSemester());// get all the data of a particulat dept sem and year
+	
+		}
+		
+		if(dp.getExamtype().contentEquals("regular")){
+			dlst=drr.findByExamtypeAndSessionAndDeptAndSemesterOrderByRollnoAsc(dp.getExamtype(),
+				dp.getSession(),dp.getDept(),dp.getSemester());// get all the data of a particulat dept sem and year
+	
+		}		
+		
+	
 		for(Department d : dlst) {
 			
 			if(checkdp(d.getRollno())) {
@@ -110,17 +122,34 @@ rs.setDept(dp.getDept()); rs.setName(dp.getStudentname());
 			}
 		}
 		
-	
 		
-	for(Department d : dlst2) {
+		
+for(Department d : dlst2) {
 			Helperr h = new Helperr();
-			h.setRst(findresult(d));
-			h.setDps(drr.findBySessionAndDeptAndSemesterAndRollnoOrderBySubcodeAsc(d.getSession(),d.getDept(),d.getSemester(),d.getRollno()));		
-			helplst.add(h);
+h.setRst(findresult(d)); // contain gpa , reg no roll , session , dept , semester , name , grade , letter grade,
+h.setDps(drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndRollno(
+d.getExamtype(),d.getYear(),		
+		d.getSession(),d.getDept(),d.getSemester(),d.getRollno())); // return subject list and subjective grade or result		
+		// now arrange the dps or sublitectve result list into subjective order according to technical board
+List<Department> tempdps=new ArrayList<Department>(); // this empty list  is taken to add the dps according to subcode order or sirial ,
+
+for(Orsub suborder : th.getOrsub()) {
+	
+for(Department dt : h.getDps()){
+	
+if(dt.getSubcode().contentEquals(suborder.getSubcode())) {
+	tempdps.add(dt);
+}
+	
+}
+	
+}
+h.setDps(tempdps);
+helplst.add(h);
+			
 		}
 		
-		
-		return new ResponseEntity<List<Helperr>>(helplst,HttpStatus.OK)  ;
+return new ResponseEntity<List<Helperr>>(helplst,HttpStatus.OK)  ;
 		
 	}	
 		

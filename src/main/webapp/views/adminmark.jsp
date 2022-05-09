@@ -26,32 +26,77 @@ $scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrica
 
 $scope.p={"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
 $scope.p2={"dept":"","semester":"","session":"","subcode":""};
-$scope.p3={"session":"","dept":"","semester":"","rollno":""};
-
+$scope.p3={"examtype":"","year":null,"session":"","dept":"","semester":"","rollno":""};
+$scope.examtype=["--","regular","referred","irregular"];
 $scope.dps=[];
 $scope.gotresult=null;
 
-$scope.findresult=function(){
+$scope.chtype=function(){
 	
-	$http({ 
-		method:"POST" , 
-		url:"${pageContext.request.contextPath}/findresult", 
-		data:angular.toJson($scope.p3),
-	    headers:{"Content-Type":"application/json"}	
-		
-	        }).then(function(response){
-	      
-	     $scope.gotresult=response.data.rst;
-	     $scope.dps=response.data.dps;
-  
-	        	})		
+	if($scope.p3.examtype=="irregular" || $scope.p3.examtype=="referred"){
+		document.getElementById("year").style.display="block";
 		
 	}
+	if($scope.p3.examtype=="regular" || $scope.p3.examtype=="--"){
+		document.getElementById("year").style.display="none";	
+		
+	}	
 	
-	
-	
-	
+}
 
+$scope.findresult=function(){
+	
+					
+	if($scope.p3.examtype!="" || $scope.p3.examtype!="--"){
+		
+		
+	if($scope.p3.examtype=="regular"){
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/findresult", 
+			data:angular.toJson($scope.p3),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		      
+		     $scope.gotresult=response.data.rst;
+		     $scope.dps=response.data.dps;
+	  
+		        	})		
+		
+	}	
+	
+	if($scope.p3.examtype!="regular"){
+		
+	if($scope.p3.year==null){
+		alert("select exam year ");
+	}	
+		
+	if($scope.p3.year!=null){
+		
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/findresult", 
+			data:angular.toJson($scope.p3),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		      
+		     $scope.gotresult=response.data.rst;
+		     $scope.dps=response.data.dps;
+	  
+		        	})		
+		
+
+	}		
+				        	
+	}			
+		
+		
+	}	
+				
+      }
+	
 	        	
 	        	
 })
@@ -119,12 +164,14 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 <table border="1" align="center" >
 <tr>
+<th>examtype</th>
 <th>Session</th>
 <th>Department</th>
 <th>Semester</th>
 <th>rollno</th>
 </tr>
 <tr>
+<td><select  ng-model="p3.examtype" ng-options="c for c in examtype" ng-change="chtype()"></select></td>
 <td><select  ng-model="p3.session" ng-options="c for c in sch"></select></td>
 <td><select  ng-model="p3.dept" ng-options="c for c in khan2"></select></td>
 <td><select  ng-model="p3.semester" ng-options="d for d in khan1"></select></td>
@@ -132,7 +179,10 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 </tr>
 </table> 
 <br/>
-<button style="margin-left:50%;" class="btn btn-success btn-sm" ng-click="findresult()">submit</button>
+<div id="year" style="display:none;" align="center"> exam year: <input type="number"  ng-model="p3.year" /></div> <br/>
+
+
+<button style="margin-left:50%;" class="btn btn-dark btn-sm" ng-click="findresult()">submit</button>
 <br/>
 <br/>
 

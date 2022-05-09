@@ -23,12 +23,19 @@ $scope.sch=["2010-11","2011-12","2012-13",'2013-14','2014-15','2015-16','2016-17
 $scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th',"any"];
 $scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
 $scope.p={"credit":null,"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
-$scope.p2={"dept":"any","semester":"any","session":"any","subcode":null};
+$scope.examtype2=["--","regular","referred","irregular"];
+$scope.p2={"examtype":"","year":null,"dept":"any","semester":"any","session":"any","subcode":null};
+
 $scope.p3={"dept":"","semester":"","rollno":""};
 $scope.strecord=[];
-var r1={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"","duration":"","year":null,"pub":"","issue":""};
-var r2={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"","duration":"","year":null, "pub":"","issue":""};
-var r3={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"","duration":"","year":null,"pub":"","issue":""};
+var r1={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
+		
+var r2={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
+var r3={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
+		
 
 $scope.strecord.push(r1);
 $scope.strecord.push(r2);
@@ -44,9 +51,12 @@ $scope.clearstfilter=function(){
 
 
 $scope.addst=function(i){
-	var r={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"","duration":"","year":null,"pub":"","issue":""};
+	var r={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
 	$scope.strecord.splice(i, 0, r);
 }
+
+$scope.examtype=["--","regular","referred","irregular"];
 
 $scope.removest=function(i){
 	if($scope.strecord.length>1){
@@ -55,6 +65,7 @@ $scope.removest=function(i){
 	
 	
 }
+
 $scope.substrecord=function(){
 		var x="no";
 	angular.forEach($scope.strecord,function(v,k){
@@ -63,13 +74,20 @@ $scope.substrecord=function(){
 		v.semester=$scope.p.semester;
 		v.session=$scope.p.session;
 		v.subcode=$scope.p.subcode;
+		
+		v.tcv=$scope.p.tcv; 
+		v.tfv=$scope.p.tfv;
+		v.pcv=$scope.p.pcv; 
+		v.pfv=$scope.p.pfv;
+
 		v.subname=$scope.p.subname;
 		v.fullmark=$scope.p.fullmark;
 	v.year=$scope.p.year; v.duration=$scope.p.duration;
-	v.pub=$scope.p.pub;  v.issue=$scope.p.issue;
+	v.pub=$scope.p.pub;  v.issue=$scope.p.issue; v.examtype=$scope.p.examtype;
 	
 if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rollno==null || v.regno==null || v.credit==null ||
-	v.session=="" || v.fullmark<=0 || v.fullmark==null  	|| v.subname=="" || v.rollno<=0 || v.regno<=0 || v.subcode<=0){
+	v.year==null || v.examtype=="" || v.examtype=="--" || v.session=="" || v.fullmark<=0 || v.fullmark==null || 
+	v.subname=="" || v.rollno<=0 || v.regno<=0 || v.subcode<=0 || v.pcv==null || v.pfv==null || v.tcv==null || v.tfv==null){
 	x="yes";
 }
 	});
@@ -84,7 +102,7 @@ if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rol
 			
 		        }).then(function(response){
 		        	
-	alert(response.data[0].stringdate);
+	alert(response.data[0].studentname);
 	  
 		        	})	
 	}
@@ -100,26 +118,35 @@ $scope.clearstrecord=function(){
 $scope.p.subname="";
 $scope.p.fullmark=null;
 $scope.p.credit=null; 	
-	
+$scope.p.pcv=null; 	$scope.p.tcv=null; $scope.p.tfv=null; $scope.p.pfv=null; 	
 }
 
 
 $scope.filtstudent=function(){
 	
-	$http({ 
-		method:"POST" , 
-		url:"${pageContext.request.contextPath}/filtstudent", 
-		data:angular.toJson($scope.p2),
-	    headers:{"Content-Type":"application/json"}	
-		
-	        }).then(function(response){
-	      
-	        	$scope.fdept=response.data;
-	        	
-	        	})		
 	
+	if($scope.p2.examtype!="" || $scope.p2.examtype!="--" || $scope.p2.year!=null){
+		
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/filtstudent", 
+			data:angular.toJson($scope.p2),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		      
+		        	$scope.fdept=response.data;
+		        	
+		        	})
+	}
+	
+	if($scope.p2.examtype=="" || $scope.p2.examtype=="--" || $scope.p2.year==null){		
+		alert("select exam type and exam year for example 'regular' 2021 ");
+	}
 	
 }	
+
+
 
 $scope.cleardept=function(){
 	
@@ -182,7 +209,6 @@ $scope.getcode=function(){
 	
 	
 }
-
 
 
 
@@ -257,17 +283,11 @@ if(x.studentname!="" && x.rollno!="" && x.regno!=""){
 	    		        	})
 	   
 	     
-	     
-	     
-	     
-	        	})		
+	  })		
 		
 	}	
 
-	      	
-	     	
-	        	
-}
+	      }
 
 
 $scope.submark=function(){
@@ -353,8 +373,7 @@ $scope.marktime=function(){
 		        		alert("can not update or edit because you have not selected session , deparment and semester . please select");
 		        	}
 		        				        	
-		        	
-		        	
+		        			        	
 	
 }
 
@@ -370,6 +389,13 @@ $scope.marktime2=function(){
 			v.fullmark=$scope.fdept[0].fullmark; 
 			v.subname=$scope.fdept[0].subname;
 			v.credit=$scope.fdept[0].credit;
+			
+			v.tcv=$scope.fdept[0].tcv; 
+			v.tfv=$scope.fdept[0].tfv;
+			
+			v.pcv=$scope.fdept[0].pcv;
+			v.pfv=$scope.fdept[0].pfv;
+			
 			}
 
 				
@@ -602,23 +628,47 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 <div  style="margin-left:8%;background-color:#66CDAA;width:85%;display:none;font-size:0.80em;" id="1">
 <br/>
-  <h5 style="color:white;text-align:center;">select subject</h5> 
 <table border="1" align="center" >
 <tr>
 <th style="background-color:blue;">session*</th>
 <th style="background-color:blue;">Department*</th>
 <th style="background-color:blue;">Semester*</th>
-<th style="background-color:blue;">subject code*</th>
-<th style="background-color:blue;">sub name*</th>
-<th style="background-color:blue;">total mark*</th>
-<th style="background-color:blue;">credit*</th>
+<th style="background-color:blue;">examtype*</th>
+<th style="background-color:blue;">exam year*</th>
 </tr>
 <tr>
 <td><select  ng-model="p.session" ng-options="c for c in sch"></select></td>
 <td><select  ng-model="p.dept" ng-options="c for c in khan2"></select></td>
 <td><select  ng-model="p.semester" ng-options="d for d in khan1"></select></td>
+<td><select  ng-model="p.examtype" ng-options="c for c in examtype"></select></td>
+<td><input type="number" style="width:100px;"  ng-model="p.year"/></td>
+</tr>
+</table>
+<br/>
+
+  <h5 style="color:white;text-align:center;">select subject</h5> 
+<table border="1" align="center" >
+<tr>
+<th style="background-color:blue;">subject code*</th>
+<th style="background-color:blue;">sub name*</th>
+<th style="background-color:blue;">TC*</th>
+<th style="background-color:blue;">TF*</th>
+<th style="background-color:blue;">PC*</th>
+<th style="background-color:blue;">PF*</th>
+<th style="background-color:blue;">total mark*</th>
+<th style="background-color:blue;">credit*</th>
+
+</tr>
+<tr>
 <td><input type="number" style="width:100px;"  ng-model="p.subcode"/></td>
 <td><input type="text"  ng-model="p.subname"/></td>
+
+<td><input type="number"  style="width:70px;"  ng-model="p.tcv"/></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.tfv"/>   
+<td><input type="number"  style="width:70px;"  ng-model="p.pcv"/></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.pfv"/>   
+
+
 <td><input type="number"  style="width:70px;"  ng-model="p.fullmark"/></td>
 <td><input type="number"  style="width:70px;"  ng-model="p.credit"/>   
   </td>
@@ -630,13 +680,11 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
   <h5 style="color:white;text-align:center;">exam duration, year and others</h5> 
 <table border="1" align="center" >
 <tr>
-<th>exam year</th>
 <th>exam duration</th>
 <th>result publication date</th>
 <th>result issue date</th>
 </tr>
 <tr>
-<td><input type="number" style="width:100px;"  ng-model="p.year"/></td>
 <td><input type="text"   ng-model="p.duration"/></td>
 <td><input type="text"   ng-model="p.pub"/></td>
 <td><input type="text"  ng-model="p.issue"/></td>
@@ -687,12 +735,16 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <h4 style="text-align:center;color:black;padding:5px;">select 1. session , 2. dept , 3.semester,  4. subject code to insert mark</h4>
 <table border="1" align="center" >
 <tr>
+<th>exam type</th>
+<th>exam year</th>
 <th>session</th>
 <th>Department</th>
 <th>Semester</th>
 <th>subject code</th>
 </tr>
 <tr>
+<td><select  ng-model="p2.examtype" ng-options="c for c in examtype2" ng-change="filtstudent()"></select></td>
+<td><input type="number"   ng-model="p2.year" /></td>
 <td><select  ng-model="p2.session" ng-options="c for c in sch" ng-change="filtstudent()"></select></td>
 <td><select  ng-model="p2.dept" ng-options="c for c in khan2" ng-change="filtstudent()"></select></td>
 <td><select  ng-model="p2.semester" ng-options="d for d in khan1" ng-change="filtstudent()"></select></td>
@@ -706,7 +758,14 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <div align="center">
 subject name<input type="text" ng-model="fdept[0].subname" ng-change="marktime2()"  class="form-control" style="width:40%;" placeholder="subject name"  />
 <br/>
-subject credit:-<input type="number" ng-model="fdept[0].credit" ng-change="marktime2()" />
+subject credit:-<input type="number" ng-model="fdept[0].credit" ng-change="marktime2()" /> <br/>
+
+TC:-<input type="number" ng-model="fdept[0].tcv" ng-change="marktime2()" /> TF:-<input type="number" ng-model="fdept[0].tfv" ng-change="marktime2()" />
+<br/>
+
+PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-<input type="number" ng-model="fdept[0].pfv" ng-change="marktime2()" />
+<br/>
+
 </div>
 <br/><br/>
 
@@ -802,19 +861,17 @@ subject credit:-<input type="number" ng-model="fdept[0].credit" ng-change="markt
 <td  > <b>TC::</b>
 <input  style="width:50%"  type="number"  ng-model="x.tc"  /> 
 <br/>
-<b>PC::</b>
-<input style="width:50%"  type="number"  ng-model="x.pc"  /> 
-<br/>
 <b>TF::</b>
-<input style="width:50%"  type="number"  ng-model="x.tf" /> 
+<input style="width:50%"  type="number"  ng-model="x.tf"  /> 
+<br/>
+<b>PC::</b>
+<input style="width:50%"  type="number"  ng-model="x.pc" /> 
 <br/>
 <b>PF::</b>
 <input style="width:50%"  type="number"   ng-model="x.pf"  /> 
 </td>
 
 <td>
-<b>date::</b>{{x.stringdate}}
-<br/>
 <b>grade:</b>{{x.grade}}
 <br/>
 <b>gpa:</b>

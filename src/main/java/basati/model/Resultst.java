@@ -2,7 +2,7 @@ package basati.model;
 
 public class Resultst {
 
-
+	
 	private String dept;
 	private String roll;
 	private String semester;

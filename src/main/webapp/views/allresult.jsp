@@ -28,32 +28,97 @@ module.controller("ar",function($scope,$http){
 	$scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
 
 	$scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
-
-	$scope.p={"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
+	$scope.examtype=["--","regular","referred","irregular"];
+	$scope.p={"examtype":"","year":null,"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
 	
 	$scope.allres=[];$scope.allr=[];
 	$scope.tor=null;
 	$scope.totalr=null;
 	$scope.fromr=null;
 	
-	$scope.getall=function(){
-     
-		$http({ 
-			method:"POST" , 
-			url:"${pageContext.request.contextPath}/getallresult", 
-		  	data:angular.toJson($scope.p),
-		    headers:{"Content-Type":"application/json"}	
-			
-		        }).then(function(response){
-		        	
-		        	$scope.allr=response.data;
-		        	$scope.allres=response.data;
-		        	$scope.tor=response.data.length;;
-		        	$scope.totalr=response.data.length;
-		        	$scope.fromr=1;
-		        	
-		        	})	
+	$scope.chtype=function(){
 		
+		if($scope.p.examtype=="irregular" || $scope.p.examtype=="referred"){
+			document.getElementById("year").style.display="block";
+			
+		}
+		if($scope.p.examtype=="regular" || $scope.p.examtype=="--"){
+			document.getElementById("year").style.display="none";	
+			
+		}	
+		
+	}
+	
+	
+	$scope.chtype=function(){
+		
+		if($scope.p3.examtype=="irregular" || $scope.p3.examtype=="referred"){
+			document.getElementById("year").style.display="block";
+			
+		}
+		if($scope.p3.examtype=="regular" || $scope.p3.examtype=="--"){
+			document.getElementById("year").style.display="none";	
+			
+		}	
+		
+	}
+	
+	$scope.getall=function(){
+		
+		if($scope.p.examtype!="" || $scope.p.examtype!="--"){
+			
+			
+			if($scope.p.examtype=="regular"){
+				
+				$http({ 
+					method:"POST" , 
+					url:"${pageContext.request.contextPath}/getallresult", 
+				  	data:angular.toJson($scope.p),
+				    headers:{"Content-Type":"application/json"}	
+					
+				        }).then(function(response){
+				        	
+				        	$scope.allr=response.data;
+				        	$scope.allres=response.data;
+				        	$scope.tor=response.data.length;;
+				        	$scope.totalr=response.data.length;
+				        	$scope.fromr=1;
+				        	
+				        	})			
+				
+			}	
+			
+			if($scope.p.examtype!="regular"){
+				
+			if($scope.p.year==null){
+				alert("select exam year ");
+			}	
+				
+			if($scope.p.year!=null){
+				
+				$http({ 
+					method:"POST" , 
+					url:"${pageContext.request.contextPath}/getallresult", 
+				  	data:angular.toJson($scope.p),
+				    headers:{"Content-Type":"application/json"}	
+					
+				        }).then(function(response){
+				        	
+				        	$scope.allr=response.data;
+				        	$scope.allres=response.data;
+				        	$scope.tor=response.data.length;;
+				        	$scope.totalr=response.data.length;
+				        	$scope.fromr=1;
+				        	
+				        	})		
+				
+
+			}		
+						        	
+			}			
+		}
+     
+			       			        			        			        	
 }
 	
 	
@@ -103,11 +168,6 @@ $scope.checkdept=function(t){
 	
 	
 	
-	
-	
-	
-	
-	
 });
 
 
@@ -147,8 +207,8 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 		<br/>
 	<br/>
 	
-	<h2 >Badiul Alam Science And Technology Institute</h2>
-	<h3 >Kasba , Brahmanbaria</h3>
+	<h2>Badiul Alam Science And Technology Institute</h2>
+	<h3>Kasba , Brahmanbaria</h3>
 	<h3>Result of {{p.semester}} Semester , Session-{{p.session}}</h3>
 	<h3>Technology: <b ng-if="checkdept(p.dept)=='com'">Computer</b><b ng-if="checkdept(p.dept)=='civ'">Civil</b>
 	<b ng-if="checkdept(p.dept)=='et'">Electrical</b></h3>
@@ -210,33 +270,32 @@ Principal
 	</div>  
 	
 	
-	
-	
-		  	<div id="sh"  style="margin-top:200px;padding:50px;background-color:skyblue;" class="row">
-		  	
-		  	<div class="col col-md-4" style="text-align:center;">
-		  	<table border="1" align="center" >
+<div id="sh"  style="margin-top:200px;padding:50px;background-color:skyblue;" class="row">
+<div class="col col-md-6" style="text-align:center;">
+<table border="1" align="center" >
 		<tr>
+	<th>examtype</th>
 	<th>session</th>
 	<th>department</th>
 	<th>semseter</th>
 	</tr>
-
 	
 	<tr>
+	<td><select ng-model="p.examtype"   ng-options="c for c in examtype" ng-change="chtype()" ></select></td>
 	<td><select ng-model="p.session"   ng-options="c for c in sch"></select></td>
 	<td><select ng-model="p.dept"      ng-options="c for c in khan2"></select></td>
 	<td><select ng-model="p.semester"  ng-options="c for c in khan1"></select></td>
 	</tr>
-	
 	</table>
 	
 			<br/>
+			<div id="year" style="display:none;" align="center"> exam year: <input type="number"  ng-model="p.year" /></div> <br/>
+			
 <button ng-click="getall();" class="btn btn-sm btn-success" style="margin-left:2%;">submit</button> <button class="btn btn-sm btn-dark" style="margin-left:100px;"ng-click="hidesh()">hide this part</button>
 
 		  	</div> 
-		  	
-		  	<div class="col col-md-8" style="background-color:white;padding:20px;">
+	
+	<div class="col col-md-6" style="background-color:white;padding:20px;">
 		  	<h4>Total number of students: </h4><b>{{totalr}}</b>
 		  	<br/>
 		  <b>SL NO is from:</b> <input type="number" ng-model="fromr"/>	<b>to SL NO:</b><input type="number" ng-model="tor"/>  	<button class="btn btn-success btn-sm" ng-click="filtrecord()">submit</button>
