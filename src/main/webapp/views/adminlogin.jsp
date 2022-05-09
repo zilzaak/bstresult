@@ -5,7 +5,7 @@ pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>BASATI result site</title>
+<title>BASATI result</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<c:url value="/static/theme/bootstrap431.css" /> " rel="stylesheet">
