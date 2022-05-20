@@ -66,6 +66,14 @@ $scope.removest=function(i){
 	
 }
 
+
+$scope.setmarkcredit=function(){
+	
+$scope.p.fullmark=$scope.p.tcv+$scope.p.pcv+$scope.p.tfv+$scope.p.pfv;	
+$scope.p.credit=$scope.p.fullmark/50;	
+	
+}
+
 $scope.substrecord=function(){
 		var x="no";
 	angular.forEach($scope.strecord,function(v,k){
@@ -123,9 +131,7 @@ $scope.p.pcv=null; 	$scope.p.tcv=null; $scope.p.tfv=null; $scope.p.pfv=null;
 
 
 $scope.filtstudent=function(){
-	
-	
-	if($scope.p2.examtype!="" || $scope.p2.examtype!="--" || $scope.p2.year!=null){
+if($scope.p2.examtype!="" || $scope.p2.examtype!="--" || $scope.p2.year!=null){
 		
 		$http({ 
 			method:"POST" , 
@@ -663,10 +669,10 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <td><input type="number" style="width:100px;"  ng-model="p.subcode"/></td>
 <td><input type="text"  ng-model="p.subname"/></td>
 
-<td><input type="number"  style="width:70px;"  ng-model="p.tcv"/></td>
-<td><input type="number"  style="width:70px;"  ng-model="p.tfv"/>   
-<td><input type="number"  style="width:70px;"  ng-model="p.pcv"/></td>
-<td><input type="number"  style="width:70px;"  ng-model="p.pfv"/>   
+<td><input type="number"  style="width:70px;"  ng-model="p.tcv" ng-keyup="setmarkcredit()" /></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.tfv" ng-keyup="setmarkcredit()" /></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.pcv" ng-keyup="setmarkcredit()"/></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.pfv" ng-keyup="setmarkcredit()"/></td>   
 
 
 <td><input type="number"  style="width:70px;"  ng-model="p.fullmark"/></td>
