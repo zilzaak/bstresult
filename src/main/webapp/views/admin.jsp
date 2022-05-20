@@ -22,7 +22,10 @@ $scope.sch=["2010-11","2011-12","2012-13",'2013-14','2014-15','2015-16','2016-17
 	
 $scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th',"any"];
 $scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
-$scope.p={"credit":null,"dept":"","semester":"","session":"","subcode":null,"subname":"","fullmark":null};
+
+$scope.p={"credit":null,"dept":"","semester":"","session":"","subcode":null,
+		"subname":"","fullmark":null,"tcv":null,"pcv":null,"tfv":null,"pfv":null};
+
 $scope.examtype2=["--","regular","referred","irregular"];
 $scope.p2={"examtype":"","year":null,"dept":"any","semester":"any","session":"any","subcode":null};
 
@@ -36,7 +39,6 @@ var r2={"credit":null,"dept":"","semester":"","session":"","subcode":null,"stude
 var r3={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
 		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
 		
-
 $scope.strecord.push(r1);
 $scope.strecord.push(r2);
 $scope.strecord.push(r3);
