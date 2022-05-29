@@ -31,12 +31,12 @@ $scope.p2={"examtype":"","year":null,"dept":"any","semester":"any","session":"an
 
 $scope.p3={"dept":"","semester":"","rollno":""};
 $scope.strecord=[];
-var r1={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+var r1={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":"","regno":"","subname":"",
 		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
 		
-var r2={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+var r2={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":"","regno":"","subname":"",
 		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
-var r3={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+var r3={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":"","regno":"","subname":"",
 		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
 		
 $scope.strecord.push(r1);
@@ -53,7 +53,7 @@ $scope.clearstfilter=function(){
 
 
 $scope.addst=function(i){
-	var r={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":null,"regno":null,"subname":"",
+	var r={"credit":null,"dept":"","semester":"","session":"","subcode":null,"studentname":"","rollno":"","regno":"","subname":"",
 		"duration":"","year":null,"pub":"","issue":"","examtype":"","tcv":null,"pcv":null,"tfv":null,"pfv":null};
 	$scope.strecord.splice(i, 0, r);
 }
@@ -76,6 +76,38 @@ $scope.p.credit=$scope.p.fullmark/50;
 	
 }
 
+
+
+$scope.existedrecord=function(){
+	
+	if($scope.p.session!="" && $scope.p.dept!=""){
+		
+			$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/existedrecord", 
+		  	data:angular.toJson($scope.p),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		        	if(response.data.length>1){
+		        	
+		        		$scope.strecord=response.data;
+		        	}	
+		        	
+		        	if(response.data.length<1){
+		        		$scope.strecord=[];
+		        		$scope.strecord.push(r1,r2,r3);
+		        	}
+		        	
+		          	})		
+		
+	}
+	
+	    }
+
+
+
+
 $scope.substrecord=function(){
 		var x="no";
 	angular.forEach($scope.strecord,function(v,k){
@@ -95,7 +127,7 @@ $scope.substrecord=function(){
 	v.year=$scope.p.year; v.duration=$scope.p.duration;
 	v.pub=$scope.p.pub;  v.issue=$scope.p.issue; v.examtype=$scope.p.examtype;
 	
-if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rollno==null || v.regno==null || v.credit==null ||
+if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rollno=="" || v.regno=="" || v.credit==null ||
 	v.year==null || v.examtype=="" || v.examtype=="--" || v.session=="" || v.fullmark<=0 || v.fullmark==null || 
 	v.subname=="" || v.rollno<=0 || v.regno<=0 || v.subcode<=0 || v.pcv==null || v.pfv==null || v.tcv==null || v.tfv==null){
 	x="yes";
@@ -645,8 +677,8 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <th style="background-color:blue;">exam year*</th>
 </tr>
 <tr>
-<td><select  ng-model="p.session" ng-options="c for c in sch"></select></td>
-<td><select  ng-model="p.dept" ng-options="c for c in khan2"></select></td>
+<td><select  ng-model="p.session" ng-options="c for c in sch" ng-change="existedrecord()"></select></td>
+<td><select  ng-model="p.dept" ng-options="c for c in khan2"  ng-change="existedrecord()"></select></td>
 <td><select  ng-model="p.semester" ng-options="d for d in khan1"></select></td>
 <td><select  ng-model="p.examtype" ng-options="c for c in examtype"></select></td>
 <td><input type="number" style="width:100px;"  ng-model="p.year"/></td>
@@ -716,8 +748,8 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <tr ng-repeat="x in strecord">
 <td>{{$index+1}}</td>
 <td><input  ng-model="x.studentname"/></td>
-<td><input  type="number" ng-model="x.rollno" style="width:110px;" /></td>
-<td><input type="number"  ng-model="x.regno" style="width:110px;" /></td>
+<td><input   ng-model="x.rollno" style="width:110px;" /></td>
+<td><input   ng-model="x.regno" style="width:110px;" /></td>
 <td><button class="btn btn-dark btn-sm" ng-click="removest($index)">del</button></td>
 <td><button class="btn btn-success btn-sm"  ng-click="addst($index)">add</button></td>
 </tr>

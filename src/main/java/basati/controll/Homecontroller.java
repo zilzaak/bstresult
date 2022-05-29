@@ -87,6 +87,29 @@ public class Homecontroller {
 		return mv;
 	}
 	
+	@PostMapping("/existedrecord")
+	public ResponseEntity<List<Department>> existedrecord(@RequestBody Department d){
+List<Department> lst=drr.findBySessionAndDept(d.getSession(),d.getDept());
+List<Department> lst2=new ArrayList<Department>();
+for(Department dp : lst){
+	int c=0;
+	for(Department dk : lst2){
+		if(dp.getRollno().contentEquals(dk.getRollno())) {
+			c++;
+		}
+	}
+	
+	if(c<1) {
+		lst2.add(dp);
+	}
+}
+return new ResponseEntity<List<Department>>(lst2,HttpStatus.OK);
+	}
+		
+	 
+	
+	
+	
 	@PostMapping("/upadminmail")
 	
 	public ModelAndView updatemail(@RequestParam String email,@RequestParam String pass) {

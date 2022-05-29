@@ -53,6 +53,6 @@ List<Department> findByExamtypeAndYearAndSessionAndDeptAndSemesterOrderByRollnoA
 		String session, String dept, String semester);
 List<Department> findByExamtypeAndSessionAndDeptAndSemesterAndRollno(String examtype, String session, String dept,
 		String semester, String rollno);
-
+public List<Department> findBySessionAndDept(String session ,String dept);
 			
 }
