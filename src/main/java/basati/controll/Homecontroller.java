@@ -100,7 +100,11 @@ for(Department dp : lst){
 	}
 	
 	if(c<1) {
-		lst2.add(dp);
+Department nn=new Department();
+nn.setStudentname(dp.getStudentname());
+nn.setRegno(dp.getRegno());
+nn.setRollno(dp.getRollno());
+		lst2.add(nn);
 	}
 }
 return new ResponseEntity<List<Department>>(lst2,HttpStatus.OK);
