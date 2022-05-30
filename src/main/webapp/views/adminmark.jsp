@@ -96,9 +96,42 @@ $scope.findresult=function(){
 	}	
 				
       }
+      
+      
+ $scope.orsub=[];     
+      var s1={"subcode":""};
+      var s2={"subcode":""};
+      var s3={"subcode":""};
+      $scope.orsub.push(s1,s2,s3);	
+      
+	$scope.addsub=function(i){
+	      var s={"subcode":""};
+	      $scope.orsub.splice(i,0,s);		
+		
+	}        	
+	 
+	$scope.removesub=function(i){
+		
+		 $scope.orsub.splice(i,1);
+	} 
 	
-	        	
-	        	
+	$scope.setserial=function(){
+		
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/setserial", 
+			data:angular.toJson($scope.orsub),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		      
+				alert("successfully set subject serial");
+		        })		
+		
+	}
+	
+
+	
 })
 </script>
 
@@ -160,6 +193,28 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 
 <div  style="margin-left:8%;background-color:ghostwhite;width:85%;font-size:0.80em;" id="3">
+
+<h2 style="text-align:center;">set subject serial no according to subject code</h2>
+
+<table border="1" align="center" >
+<tr>
+<th>SL NO</th>
+<th>subject code</th>
+<th>add/remove</th>
+</tr>
+
+<tr ng-repeat="sl in orsub">
+<td>{{$index+1}}</td>
+<td><input type="text" ng-model="sl.subcode" /></td>
+<td>
+
+<button ng-click="addsub($index)">(+)</button> 
+<button ng-click="removesub($index)">(-)</button>
+</td>
+</tr>
+</table>
+<button class="btn btn-sm" ng-click="setserial()">save</button>
+
 <h2 style="text-align:center;color:green;background-color:white;padding:5px;">get result</h2>
 
 <table border="1" align="center" >

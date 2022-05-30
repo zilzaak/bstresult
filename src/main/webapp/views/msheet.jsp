@@ -235,29 +235,6 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 </div>
 
 
-<br/>
-<br/>
-<div align="center">
-<form:form method="post" action="${pageContext.request.contextPath}/savemark" modelAttribute="contactForm">
-	<table>
-	<tr>
-		<th>Serial no</th>
-		<th>subject code</th>
-
-
-	</tr>
-	<c:forEach items="${markform.orsub}" var="contact" varStatus="status">
-		<tr>
-			<td align="center">${status.count}</td>
-			<td><input name="orsub[${status.index}].subcode" value="${contact.subcode}"/></td>
-         </tr>
-	</c:forEach>
-</table>	
-<br/>
-<input type="submit" value="Save" />
-	
-</form:form>
-</div>
 
 </body>
 </html>
