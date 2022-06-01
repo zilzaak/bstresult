@@ -194,7 +194,8 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 <div  style="margin-left:8%;background-color:ghostwhite;width:85%;font-size:0.80em;" id="3">
 
-<h2 style="text-align:center;">set subject serial no according to subject code</h2>
+<div style="background-color:gray;">
+<h2 style="text-align:center;">set subject serial before get result</h2>
 
 <table border="1" align="center" >
 <tr>
@@ -213,7 +214,12 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 </td>
 </tr>
 </table>
-<button class="btn btn-sm" ng-click="setserial()">save</button>
+<br/>
+<div align="center" >
+<button class="btn btn-sm" ng-click="setserial()"  style="background-color:white;"><b>save serial</b></button>
+</div>
+<br/>
+</div>
 
 <h2 style="text-align:center;color:green;background-color:white;padding:5px;">get result</h2>
 
