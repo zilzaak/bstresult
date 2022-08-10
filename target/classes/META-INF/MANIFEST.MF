@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Implementation-Title: result
 Implementation-Version: 0.0.1-SNAPSHOT
-Built-By: BASATI
+Built-By: pc
 Implementation-Vendor-Id: result
 Build-Jdk: 1.8.0_291
 Implementation-URL: https://spring.io/projects/spring-boot/result

@@ -1,11 +1,11 @@
 
 #hc{
 	
-	background-image:url("circulb.jpg");
-	background-size:900px 800px;
-	 background-repeat: no-repeat;
-	   background-position:center;
-	background-color:rgb(233,237,241)
+	background-image:url("circulb.jpg"),url("bgr.png");
+	background-size:900px 800px ,20px 20px;
+	 background-repeat: no-repeat , repeat;
+	   background-position:center ,left bottom;
+	background-color:rgb(233,237,241) ,rgb(233,237,241);
 	  
 	  
 	

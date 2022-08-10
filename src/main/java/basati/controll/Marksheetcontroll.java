@@ -19,6 +19,7 @@ import basati.model.Department;
 import basati.model.Helperr;
 import basati.model.Markseethelper;
 import basati.model.Orsub;
+import basati.model.Subserial;
 
 @Controller
 public class Marksheetcontroll {
@@ -38,21 +39,54 @@ public void serialsubject(Orsub or,int index){
 			}
 
 
-	@PostMapping("/setserial")
-	public ResponseEntity<Orsub> setserial(@RequestBody List<Orsub> cs,HttpSession session) {
-	 List<Orsub> codelist=new ArrayList<Orsub>();
-	 codelist=cs;
- session.setAttribute("codelist", codelist);
-		return new ResponseEntity<Orsub>(codelist.get(0),HttpStatus.OK);
+
+@PostMapping("/setserial")
+	public ResponseEntity<Subserial> setserial(@RequestBody Subserial cs,HttpSession session) {
 	
+	if(session.getAttribute("codelist")==null) {
+ List<Subserial> codelist=new ArrayList<Subserial>();
+	      codelist.add(cs);
+session.setAttribute("codelist", codelist);
+for(Orsub o : codelist.get(codelist.size()-1).getOrsubs()) {
+	System.out.println("the item inside orsub is "+o.getSubcode());
+}
+	}
+	else {
+		
+List<Subserial> codelist=(List<Subserial>) session.getAttribute("codelist");
+int c=0;
+for(Subserial s : codelist) {
+	if(s.getSemester().contentEquals(cs.getSemester()) && s.getSession().contentEquals(cs.getSession()) && s.getDepartment().contentEquals(cs.getDepartment())) {
+		s.setOrsubs(cs.getOrsubs());
+		c++;
+	}
+}
+
+if(c<1) {
+	codelist.add(cs);	
+}
+session.setAttribute("codelist", codelist);
+
+		}
+	
+return new ResponseEntity<Subserial>(cs,HttpStatus.OK);
+
 	}
 	
 	
 	
 	@RequestMapping("/download")
 	public ModelAndView downloadsheet(HttpSession session) {
-		List<Orsub> arangesub=(List<Orsub>) session.getAttribute("codelist");
-		Helperr hp=(Helperr) session.getAttribute("helper");
+		List<Subserial> subs=(List<Subserial>) session.getAttribute("codelist");
+		List<Orsub> arangesub=new ArrayList<Orsub>();
+		Department df=(Department) session.getAttribute("dp");
+for(Subserial s : subs) {
+if(s.getDepartment().contentEquals(df.getDept()) && s.getSession().contentEquals(df.getSession()) && s.getSemester().contentEquals(df.getSemester())) {
+		arangesub=s.getOrsubs();		
+		}
+		}
+
+Helperr hp=(Helperr) session.getAttribute("helper");
 		ModelAndView mv = new ModelAndView("msheet");
 		for(Department d : hp.getDps()) {
 			 String sd=d.getGrade();

@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import basati.model.Department;
 import basati.model.Helperr;
 import basati.model.Orsub;
 import basati.model.Resultst;
+import basati.model.Subserial;
 import basati.model.Tabulationhelper;
 import basati.repo.Departmentrepo;
 
@@ -24,7 +27,6 @@ public class Tabulation {
 
 	@Autowired
 	private Departmentrepo drr;
-
 
 	public List<Department> dlst2=new ArrayList<Department>();
 	public boolean checkdp(String roll) {
@@ -50,9 +52,7 @@ List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndR
 dp.getExamtype(),dp.getYear(),		
 		dp.getSession(),dp.getDept(),dp.getSemester(),dp.getRollno());
 float totalcredit=0;float sum=0;float gpa=0; 
-DecimalFormat dfrmt = new DecimalFormat();
-dfrmt.setMaximumFractionDigits(2);
-
+DecimalFormat dfrmt = new DecimalFormat("#.00");
 boolean p=false;
 for(Department d: lst) {
         String gd=d.getGrade();
@@ -66,7 +66,7 @@ sum=sum+d.getGradepoint()*d.getCredit();
     
 
   if(p) {
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+rs.setGpa("0.00");rs.setRoll(dp.getRollno());
 rs.setSemester(dp.getSemester());
 rs.setDept(dp.getDept());
 rs.setSession(dp.getSession());
@@ -76,23 +76,30 @@ rs.setSms("F");
       
 if(!p) {
 gpa=sum/totalcredit; 
-gpa=Float.parseFloat(dfrmt.format(gpa));
+String gpas=dfrmt.format(gpa);
 rs.setSession(lst.get(0).getSession());
 rs.setRegno(lst.get(0).getRegno());	
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+rs.setGpa(gpas);rs.setRoll(dp.getRollno());
 rs.setSemester(dp.getSemester());
-rs.setSms(getletter(rs.getGpa()));
+rs.setSms(getletter(Float.valueOf(gpas)));
 rs.setDept(dp.getDept()); rs.setName(dp.getStudentname());
 }
   return rs;
 		
 	}	
 
-	
-
-
 @PostMapping("/tabresult")
-	public ResponseEntity<List<Helperr>> getallresult(@RequestBody Tabulationhelper th) {
+	public ResponseEntity<List<Helperr>> getallresult(@RequestBody Tabulationhelper th,HttpSession session) {
+	List<Subserial> subs=(List<Subserial>) session.getAttribute("codelist");
+	List<Orsub> orlist=new ArrayList<Orsub>();
+	Department df=th.getDp();
+for(Subserial s : subs) {
+if(s.getDepartment().contentEquals(df.getDept()) && s.getSession().contentEquals(df.getSession()) && s.getSemester().contentEquals(df.getSemester())) {
+	orlist=s.getOrsubs();		
+	}
+	}
+
+	th.setOrsub(orlist);
 		Department dp=th.getDp(); //assigning the dp value for search or filter student 
 		
 	    List<Department> dl2=new ArrayList<Department>();
@@ -211,6 +218,5 @@ return "C";
 
 	}
 	
-
 
 }

@@ -22,7 +22,7 @@ module.controller("ar",function($scope,$http){
 	$scope.sch=['2010-11','2011-12','2012-13','2013-14','2014-15','2015-16','2016-17','2017-18','2018-19','2019-20','2020-21',
 		'2021-22','2022-23','2023-24','2024-25','2025-26','2026-27','2027-28','2028-29','2029-30','2030-31','2031-32','2032-33','2033-34'];
 	
-	$scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+	$scope.khan1=['FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH','SEVENTH','EIGHTH'];
 	$scope.sublist=[];
 
 	$scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
@@ -149,7 +149,11 @@ $scope.chtype=function(){
 		
 	}	
 	
-	
+$scope.changegpa=function(i){
+
+	$scope.ind=i;
+	document.getElementById("kk").click();
+}	
 	
 
 	
@@ -366,7 +370,7 @@ STATUS
 <th style="height:105px;width:8%;">
 <div class="row" style="height:100%;margin-left:0.25%;margin-right:0.25%;">
 <div class="col-sm-6" style="border:1px solid black;">
-<div class="row" style="border:1px solid black;height:68%;padding-left:20%;padding-top:20%;">
+<div class="row" style="border:1px solid black;height:68%;padding-left:20%;padding-top:20%;" ng-click="changegpa($index)">
 {{ps.rst.gpa}} <br/>
 </div>
 <div class="row" style="border:1px solid black;height:32%;padding-left:20%;padding-top:10%;">
@@ -461,7 +465,7 @@ STATUS
 <br/>
 <div id="year" style="display:none;">  exam year:- <input type="number"  ng-model="p.year"  /></div>
 <br/>
-<table align="center;" border="1">
+<table align="center;" border="1" style="display:none;"> <!-- this section no need as i have set the serial no in session object -->
 <tr>
 <th>serial no</th>
 <th>subject code</th>
@@ -477,8 +481,6 @@ STATUS
 </td>
 </tr>
 </table>
-<br/>
-<br/>
 	<div align="center" class="row" >
 	<div class="col" style="text-align:left;">
 	<button ng-click="getall();" class="btn btn-sm btn-success" style="margin-left:35%;">submit</button>
@@ -490,6 +492,28 @@ STATUS
 	
 	</div>
 	
+<button  id="kk" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#smodal" style="margin-left:45%;display:none;">edit gpa</button>
+<div id="smodal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+ <!-- Modal content-->
+      <div class="modal-content">
+      <div class="modal-header" style="background-color:gray;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+
+<input type="text" ng-model="allres[ind].rst.gpa" />
+
+
+
+ </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" id="reclose">Close</button>
+</div>
+</div>
+</div>
+</div>	
 
 
 

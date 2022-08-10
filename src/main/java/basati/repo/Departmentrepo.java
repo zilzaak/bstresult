@@ -11,12 +11,7 @@ import basati.model.Department;
 
 public interface Departmentrepo extends JpaRepository<Department,Integer> {
 
-
-
-	
-	
-	
-	List<Department> findByExamtypeAndSessionOrderByRollnoAsc(String examtype, String session); // filter student
+List<Department> findByExamtypeAndSessionOrderByRollnoAsc(String examtype, String session); // filter student
 List<Department> findByExamtypeAndDeptAndSemesterOrderByRollnoAsc(String examtype, String dept, String semester);// filter student
 List<Department> findByExamtypeAndSessionAndDeptOrderByRollnoAsc(String examtype, String session, String dept);// filter student
 List<Department> findByExamtypeAndSessionAndDeptAndSemesterOrderByRollnoAsc(String examtype, String session,
@@ -54,5 +49,7 @@ List<Department> findByExamtypeAndYearAndSessionAndDeptAndSemesterOrderByRollnoA
 List<Department> findByExamtypeAndSessionAndDeptAndSemesterAndRollno(String examtype, String session, String dept,
 		String semester, String rollno);
 public List<Department> findBySessionAndDept(String session ,String dept);
+List<Department> findByDeptAndSemester(String dept, String semester);
+List<Department> findBySemester(String s);
 			
 }

@@ -21,12 +21,11 @@
 <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>  -->
 
 <style>
+
+
 *{
 box-sizing:border-box;
 }
-
-
-
 
 .html-content{
 width:1000px; 
@@ -53,9 +52,7 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 	}
 	  %>
 	  
-
 <div  class="html-content" style="margin-left:2%;background-color:floaralwhite;border:2px solid black;" id="hc">
-
 <div style="border:3px solid black;padding:4px;">
 <div style="border:6px solid blue;">
 
@@ -196,7 +193,11 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
     </table>
         <br/>
      
-     <div align="right"  style="width:100.70%;" >Semester GPA :<b style="border:1px solid black;padding:4px;margin-left:5px;">${hp.rst.gpa}</b></div>
+    <!--  <div align="right"  style="width:100.70%;" >Semester GPA :
+     <input type="text" style="width:70px;border:1.4px solid black;text-align:center;" name="tt" value="${hp.rst.gpa}" /></div> --->
+    
+  <div align="right"  style="width:100.70%;" >Semester GPA :<b style="border:1px solid black;padding:4px;margin-left:5px;">${hp.rst.gpa}</b></div>
+     
 </div>
 
 <br/>
@@ -233,8 +234,6 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
    <b >This Academic Transcript issued without any alteration or erasure</b> 
   </div>
 </div>
-
-
 
 </body>
 </html>

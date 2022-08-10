@@ -349,8 +349,7 @@ List<Department> lst = drr.findByExamtypeAndYearAndSessionAndDeptAndSemesterAndR
 float totalcredit=0;
 float sum=0;
 float gpa=0; 
-DecimalFormat dfrmt = new DecimalFormat();
-dfrmt.setMaximumFractionDigits(2);
+DecimalFormat df = new DecimalFormat("#.00");
 boolean p=false;
 Resultst rs = new Resultst();
 
@@ -362,7 +361,7 @@ Resultst rs = new Resultst();
 			rs.setRoll(d.getRollno());
 		    rs.setRegno(d.getRegno());	rs.setSession(d.getSession());
 		    rs.setSerial("not found");rs.setSms("student mark not inserted, insert to get result");	    
-rs.setGpa((float) 0.00);
+rs.setGpa("0.00");
 		    return rs;
     }
 	
@@ -380,10 +379,8 @@ if(d.getGrade().contentEquals("F")) {
     	totalcredit=totalcredit+d.getCredit();
     }
     
-    
-    
 if(p) {
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+rs.setGpa("0.00");rs.setRoll(dp.getRollno());
 rs.setSemester(dp.getSemester());
 rs.setDept(dp.getDept());
 rs.setSession(dp.getSession());
@@ -393,15 +390,14 @@ rs.setSms("the student failed");
       
 if(!p) {
 gpa=sum/totalcredit; 
-gpa=Float.parseFloat(dfrmt.format(gpa));
+String gpas= df.format(gpa);
 String serial="12345678";
-
 if(srr.existsByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemester())) {
 Serialmake ms =srr.findByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemester()).get(0);
 rs.setSerial(ms.getSerial());
 rs.setSession(lst.get(0).getSession());
 rs.setRegno(lst.get(0).getRegno());	
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+rs.setGpa(gpas);rs.setRoll(dp.getRollno());
 rs.setSemester(dp.getSemester());rs.setSms("successfully found result");
 rs.setDept(dp.getDept());   rs.setName(dp.getStudentname());
 }
@@ -417,7 +413,7 @@ if(!srr.existsByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemes
     rs.setSerial(serial);
     rs.setSession(lst.get(0).getSession());
     rs.setRegno(lst.get(0).getRegno());	
-    rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+    rs.setGpa(df.format(gpa));rs.setRoll(dp.getRollno());
     rs.setSemester(dp.getSemester());rs.setSms("successfully found result");
     rs.setDept(dp.getDept());     rs.setName(dp.getStudentname());       
     
@@ -607,18 +603,6 @@ return new ResponseEntity<List<Department>>(lst,HttpStatus.OK);
 
 }
 
-
-@RequestMapping("/parvezupdateit")
-public void extracheck() {
-List<Department> lst = drr.findAll();
-for(Department d : lst) {
-	d.setExamtype("regular");
-	d.setYear(2021);
-	drr.save(d);
-}
-
-
-}
 
 
 

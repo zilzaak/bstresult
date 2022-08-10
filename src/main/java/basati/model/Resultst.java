@@ -11,7 +11,7 @@ public class Resultst {
 	private String session;
 	private String sms;
 	private String name;
-	private float gpa;	
+	private String gpa;	
 
 	public String getDept() {
 		return dept;
@@ -31,16 +31,16 @@ public class Resultst {
 	public void setSemester(String semester) {
 		this.semester = semester;
 	}
-	public float getGpa() {
+	public String getGpa() {
 		return gpa;
 	}
-	public void setGpa(float gpa) {
+	public void setGpa(String gpa) {
 		this.gpa = gpa;
 	}
 
 	
 
-	public Resultst(String dept, String roll, String semester, String regno, String serial, String session, float gpa,String sms) {
+	public Resultst(String dept, String roll, String semester, String regno, String serial, String session, String gpa,String sms) {
 		super();
 		this.dept = dept;
 		this.roll = roll;

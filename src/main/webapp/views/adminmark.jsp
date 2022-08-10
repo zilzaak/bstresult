@@ -5,7 +5,7 @@ pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<title>admin result</title>
+<title>Result page</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="<c:url value="/static/theme/bootstrap431.css" /> " rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,7 +20,7 @@ module.controller("sellcontrol",function($scope,$http){
 	$scope.sch=['2010-11','2011-12','2012-13','2013-14','2014-15','2015-16','2016-17','2017-18','2018-19','2019-20','2020-21',
 		'2021-22','2022-23','2023-24','2024-25','2025-26','2026-27','2027-28','2028-29','2029-30','2030-31','2031-32','2032-33','2033-34'];
 	
-$scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+$scope.khan1=['FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH','SEVENTH','EIGHTH'];
 
 $scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
 
@@ -97,38 +97,7 @@ $scope.findresult=function(){
 				
       }
       
-      
- $scope.orsub=[];     
-      var s1={"subcode":""};
-      var s2={"subcode":""};
-      var s3={"subcode":""};
-      $scope.orsub.push(s1,s2,s3);	
-      
-	$scope.addsub=function(i){
-	      var s={"subcode":""};
-	      $scope.orsub.splice(i,0,s);		
-		
-	}        	
-	 
-	$scope.removesub=function(i){
-		
-		 $scope.orsub.splice(i,1);
-	} 
-	
-	$scope.setserial=function(){
-		
-		$http({ 
-			method:"POST" , 
-			url:"${pageContext.request.contextPath}/setserial", 
-			data:angular.toJson($scope.orsub),
-		    headers:{"Content-Type":"application/json"}	
-			
-		        }).then(function(response){
-		      
-				alert("successfully set subject serial");
-		        })		
-		
-	}
+
 	
 
 	
@@ -191,37 +160,7 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 	}
 	  %>
 
-
-<div  style="margin-left:8%;background-color:ghostwhite;width:85%;font-size:0.80em;" id="3">
-
-<div style="background-color:gray;">
-<h2 style="text-align:center;">set subject serial before get result</h2>
-
-<table border="1" align="center" >
-<tr>
-<th>SL NO</th>
-<th>subject code</th>
-<th>add/remove</th>
-</tr>
-
-<tr ng-repeat="sl in orsub">
-<td>{{$index+1}}</td>
-<td><input type="text" ng-model="sl.subcode" /></td>
-<td>
-
-<button ng-click="addsub($index)">(+)</button> 
-<button ng-click="removesub($index)">(-)</button>
-</td>
-</tr>
-</table>
-<br/>
-<div align="center" >
-<button class="btn btn-sm" ng-click="setserial()"  style="background-color:white;"><b>save serial</b></button>
-</div>
-<br/>
-</div>
-
-<h2 style="text-align:center;color:green;background-color:white;padding:5px;">get result</h2>
+<br/><br/>
 
 <table border="1" align="center" >
 <tr>
@@ -287,18 +226,65 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <br/>
 
 <div ng-if="dps.length!=0" align="center">
-<form action="/download">
+<form method="get" target="_blank" action="/download">
 <button type="submit" class="btn btn-success btn-sm">download marsheet</button>
 </form>
 </div>
 
-
-
+</div>
 
 </div>
 
 
+<!--  subject serial modal pop up -->
 
+
+
+
+<!-- forgot password then check -->
+
+<div id="smodal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+ <!-- Modal content-->
+      <div class="modal-content">
+      <div class="modal-header" style="background-color:gray;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+      <b>session:</b><select ng-model="serials.session"  ng-options="x for x in sch"></select> <br/><br/>
+         <b>department:</b><select ng-model="serials.department" ng-options="x for x in khan2"></select> <br/><br/>
+            <b>semester:</b><select ng-model="serials.semester" ng-options="x for x in khan1"></select> <br/><br/>
+<table border="1" align="center" >
+<tr>
+<th>SL NO</th>
+<th>subject code</th>
+<th>add/remove</th>
+</tr>
+
+<tr ng-repeat="sl in orsub">
+<td>{{$index+1}}</td>
+<td><input type="text" ng-model="sl.subcode" /></td>
+<td>
+
+<button ng-click="addsub($index)">(+)</button> 
+<button ng-click="removesub($index)">(-)</button>
+</td>
+</tr>
+</table>
+
+<br/>
+<div align="center" >
+<button class="btn btn-sm" ng-click="setserial()"  style="background-color:white;"><b>save serial</b></button>
 </div>
+<br/>
+ </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" id="reclose">Close</button>
+</div>
+</div>
+</div>
+</div>
+
 </body>
 </html>

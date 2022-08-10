@@ -2,9 +2,7 @@ package basati.controll;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -15,9 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import basati.model.Department;
 import basati.model.Helperr;
 import basati.model.Resultst;
@@ -556,8 +556,7 @@ if(!dp.getExamtype().contentEquals("regular")) {
 
 float totalpoint=0;float totalcredit=0;
 float gpa=0; 
-DecimalFormat dfrmt = new DecimalFormat();
-dfrmt.setMaximumFractionDigits(2);
+DecimalFormat dfrmt = new DecimalFormat("#.00");
 boolean p=false;
 Resultst rs = new Resultst();
 
@@ -590,7 +589,7 @@ if(d.getGrade().contentEquals("F")) {
     
     
 if(p) {
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+rs.setGpa("0.00");rs.setRoll(dp.getRollno());
 rs.setName(dp.getStudentname());
 rs.setSemester(dp.getSemester());
 rs.setDept(dp.getDept());
@@ -601,14 +600,14 @@ rs.setSms("failed");
       
 if(!p){
 gpa=totalpoint/totalcredit; 
-gpa=Float.parseFloat(dfrmt.format(gpa));
+String gpas=dfrmt.format(gpa);
 String serial="12345678";
 if(srr.existsByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemester())) {
 Serialmake ms =srr.findByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemester()).get(0);
 rs.setSerial(ms.getSerial());
 rs.setSession(lst.get(0).getSession());
 rs.setRegno(lst.get(0).getRegno());	
-rs.setGpa(gpa);rs.setRoll(dp.getRollno());rs.setName(dp.getStudentname());
+rs.setGpa(gpas);rs.setRoll(dp.getRollno());rs.setName(dp.getStudentname());
 rs.setSemester(dp.getSemester());rs.setSms("successfully found result");
 rs.setDept(dp.getDept());
 }
@@ -624,7 +623,7 @@ if(!srr.existsByDeptAndRollnoAndSemester(dp.getDept(),dp.getRollno(),dp.getSemes
     rs.setSerial(serial);
     rs.setSession(lst.get(0).getSession());
     rs.setRegno(lst.get(0).getRegno());	rs.setName(dp.getStudentname());
-    rs.setGpa(gpa);rs.setRoll(dp.getRollno());
+    rs.setGpa(dfrmt.format(gpa));rs.setRoll(dp.getRollno());
     rs.setSemester(dp.getSemester());rs.setSms("successfully found result");
     rs.setDept(dp.getDept());         
     
@@ -643,6 +642,7 @@ if(lst.isEmpty()) {
 
 Helperr hp=new Helperr(rs,lst);
 session.setAttribute("helper", hp);
+session.setAttribute("dp",dp);
 return new  ResponseEntity<Helperr>(hp,HttpStatus.OK);
 		
 	}		
@@ -683,6 +683,45 @@ public String makeserial() {
 	
 	}	
 	
+	@RequestMapping("/changesemester/{s}/{s2}")
+	public void  changesem(@PathVariable String s,@PathVariable String s2) {
+	List<Department> cdl=drr.findBySemester(s);
+	for(Department d : cdl) {
+d.setSemester(s2);
+drr.save(d);
+	}
+	
+	}	
+	
+	
+	@PostMapping("/uniquesub")
+	
+	public ResponseEntity<List<Department>>unique(@RequestBody String[] dp) {
+	
+List<Department> udlst=drr.findByDeptAndSemester(dp[0],dp[1]);
+List<Department> udlst2=new ArrayList<Department>();
+if(!udlst.isEmpty()) {
+	for(Department d : udlst) {
+		int x=0;
+		for(Department k:udlst2) {
+			if(d.getSubcode().contentEquals(k.getSubcode())) {
+				x=x+1;
+			}
+		}
+		
+		if(x<1) {
+			udlst2.add(d);
+		}
+		
+	}
+}
+else {
+	udlst2.add(new Department());
+}
+
+		return new ResponseEntity<List<Department>>(udlst2,HttpStatus.OK);
+	
+	}		
 	
 	
 }

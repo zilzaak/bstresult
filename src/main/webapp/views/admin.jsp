@@ -20,10 +20,10 @@ $scope.sch=["2010-11","2011-12","2012-13",'2013-14','2014-15','2015-16','2016-17
 	'2021-22','2022-23','2023-24','2024-25','2025-26','2O26-27','2027-28','2028-29','2029-30','2030-31','2031-32',
 	'2032-33','2033-34','2034-35',"any"];
 	
-$scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th',"any"];
-$scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
+$scope.khan1=['FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH','SEVENTH','EIGHTH','any'];
+$scope.khan2=["66 - Computer Technology","64 - Civil Technology","67 - Electrical Technology","any"];
 
-$scope.p={"credit":null,"dept":"","semester":"","session":"","subcode":null,
+$scope.p={"credit":null,"dept":"","semester":"","session":"","subcode":"",
 		"subname":"","fullmark":null,"tcv":null,"pcv":null,"tfv":null,"pfv":null};
 
 $scope.examtype2=["--","regular","referred","irregular"];
@@ -89,7 +89,7 @@ $scope.existedrecord=function(){
 		    headers:{"Content-Type":"application/json"}	
 			
 		        }).then(function(response){
-		        	if(response.data.length>1){
+		        	if(response.data.length>0){
 		        	
 		        		$scope.strecord=response.data;
 		        	}	
@@ -103,13 +103,91 @@ $scope.existedrecord=function(){
 		
 	}
 	
+	$scope.getsublist($scope.p);
+	
 	    }
+	    
+$scope.subjects=[]; $scope.subjectsn=[];
+
+$scope.getsublist=function(p){
+	$scope.mb=[p.dept,p.semester];
+	
+	if(p.dept=="" || p.semester=="" || p.dept=="any" || p.semester=="any"){
+		alert("please select department and  semester ");
+	}
+	
+	if(p.dept!="" && p.semester!=""){
+		$scope.subjects=[]; $scope.subjectsn=[];
+		
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/uniquesub", 
+		  	data:angular.toJson($scope.mb),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+	   	
+	  $scope.subj=response.data;
+	  angular.forEach($scope.subj,function(v,k){
+		  
+		 $scope.subjects.push(v.subcode); 
+		 $scope.subjectsn.push(v.subname);
+	  })
+	  
+		        	})	
+		
+	}
+	
+	
+}
 
 
+$scope.setname=function(){
+
+	angular.forEach($scope.subj,function(v,k){
+	
+	if(v.subname==$scope.p.subname ){
+			
+		$scope.p.subname=v.subname; 
+		$scope.p.subcode=v.subcode ; 
+		$scope.p.tcv=v.tcv; 
+		$scope.p.tfv=v.tfv;
+		$scope.p.pcv=v.pcv;
+		$scope.p.pfv=v.pfv;
+		$scope.p.fullmark=v.tcv+v.tfv+v.pcv+v.pfv;
+		$scope.p.credit=$scope.p.fullmark/50;
+		}
+	
+	})
+	
+ 
+}
+
+$scope.setcode=function(){
+
+	angular.forEach($scope.subj,function(v,k){
+	
+	if(v.subcode==$scope.p.subcode){
+			
+		$scope.p.subname=v.subname; 
+		$scope.p.subcode=v.subcode ; 
+		$scope.p.tcv=v.tcv; 
+		$scope.p.tfv=v.tfv;
+		$scope.p.pcv=v.pcv;
+		$scope.p.pfv=v.pfv;
+		$scope.p.fullmark=v.tcv+v.tfv+v.pcv+v.pfv;
+		$scope.p.credit=$scope.p.fullmark/50;
+		}
+	
+	})
+	
+ 
+}
 
 
 $scope.substrecord=function(){
-		var x="no";
+
+	var x="no";
 	angular.forEach($scope.strecord,function(v,k){
 		v.credit=$scope.p.credit;
 		v.dept=$scope.p.dept;
@@ -136,6 +214,9 @@ if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rol
 	
 	
 	if(x=="no"){
+		
+		document.getElementById("mbd").style.display="none";
+		
 		$http({ 
 			method:"POST" , 
 			url:"${pageContext.request.contextPath}/substrecord", 
@@ -143,7 +224,7 @@ if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rol
 		    headers:{"Content-Type":"application/json"}	
 			
 		        }).then(function(response){
-		        	
+		        	document.getElementById("mbd").style.display="block";    	
 	alert(response.data[0].studentname);
 	  
 		        	})	
@@ -151,7 +232,7 @@ if(v.studentname=="" || v.dept=="" || v.semester=="" || v.subcode==null || v.rol
 	if(x=="yes"){	
 		
 		alert("empty field exist, fill the empty field");
-	}
+	} 
 		
 }
 
@@ -332,6 +413,9 @@ if(x.studentname!="" && x.rollno!="" && x.regno!=""){
 
 $scope.submark=function(){
 	var dept=$scope.fdept[0].dept;
+	
+	document.getElementById("mbd").style.display="none";
+	
 	$http({ 
 		method:"POST" , 
 		url:"${pageContext.request.contextPath}/submark", 
@@ -339,13 +423,15 @@ $scope.submark=function(){
 	    headers:{"Content-Type":"application/json"}	
 		
 	        }).then(function(response){
-	      
+	      document.getElementById("mbd").style.display="block";
 	        alert(response.data[0].dept);
 	        $scope.fdept=response.data;
 	        $scope.fdept[0].dept=dept;
 	        	})		
 		
 }	
+
+
 
 $scope.deletemark=function(dept){
 	
@@ -519,7 +605,43 @@ if($scope.epl=="yes" || $scope.epm=="yes" || $scope.en=="yes"){
 }
 
 
-	        	
+$scope.serials2={
+    	"session":"","department":"","semester":"","orsubs":[]	  
+      };
+      
+ $scope.orsub=[];     
+      var s1={"subcode":""};
+      var s2={"subcode":""};
+      var s3={"subcode":""};
+      $scope.orsub.push(s1,s2,s3);	
+      
+	$scope.addsub=function(i){
+	      var s={"subcode":""};
+	      $scope.orsub.splice(i,0,s);		
+		
+	}        	
+	 
+	$scope.removesub=function(i){
+		
+		 $scope.orsub.splice(i,1);
+	} 
+	
+	$scope.setserial=function(){
+		
+		$scope.serials2.orsubs=$scope.orsub;
+		
+		$http({ 
+			method:"POST" , 
+			url:"${pageContext.request.contextPath}/setserial", 
+			data:angular.toJson($scope.serials2),
+		    headers:{"Content-Type":"application/json"}	
+			
+		        }).then(function(response){
+		      
+				alert("successfully set subject serial");
+		        })		
+		
+	}	        	
 	        	
 })
 </script>
@@ -541,8 +663,19 @@ function showdiv(i){
 	}
 	
                }
-               
-                        
+      
+function autosubject(){
+	document.getElementById("ainput").style.display="inline";
+
+	document.getElementById("minput").style.display="none";
+}
+    
+function manualsubject(){
+	document.getElementById("minput").style.display="inline";
+
+	document.getElementById("ainput").style.display="none";
+}
+
 </script>
 
 
@@ -592,7 +725,7 @@ background-color:steelblue;
 </style>
 
 </head>
-<body  ng-controller="sellcontrol"  ng-app="sellapp">
+<body  ng-controller="sellcontrol"  ng-app="sellapp" id="mbd">
 
 <%
 if(session.getAttribute("user")==null && session.getAttribute("password")==null){
@@ -618,15 +751,31 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
           <a class="dropdown-item" href="#" onclick="showdiv('2');">insert student mark</a>
           </div>
        </li>
+       
+
+   
+      <li class="nav-item dropdown">
+ 
+    <b data-toggle="modal" data-target="#slm"  style="color:white;">set serial</b>
+        
+
+                  
+       </li> 
+   
+   
    
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" style="margin-left:5%;color:white;" role="button" 
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         result
-        </a>
+           result
+            </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        
-          <a class="dropdown-item" href="${pageContext.request.contextPath}/adminmark">result</a>
+       <!--   <a class="dropdown-item" href="${pageContext.request.contextPath}/adminmark"> </a>result -->
+  <form method="get" target="_blank" action="/adminmark" style="margin-left:15%;">
+<button type="submit">result</button>
+</form>
+          
+          
           <a class="dropdown-item" href="#" onclick="window.open('${pageContext.request.contextPath}/allresult')" >all result</a>
            <a class="dropdown-item" href="#" onclick="window.open('${pageContext.request.contextPath}/allresult2')" >Tabulation Sheet</a>
             <a class="dropdown-item" href="#" onclick="window.open('${pageContext.request.contextPath}/subjective')" >subjective mark Sheet</a>
@@ -679,15 +828,17 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <tr>
 <td><select  ng-model="p.session" ng-options="c for c in sch" ng-change="existedrecord()"></select></td>
 <td><select  ng-model="p.dept" ng-options="c for c in khan2"  ng-change="existedrecord()"></select></td>
-<td><select  ng-model="p.semester" ng-options="d for d in khan1"></select></td>
+<td><select  ng-model="p.semester" ng-options="d for d in khan1" ng-change="getsublist(p);"></select></td>
 <td><select  ng-model="p.examtype" ng-options="c for c in examtype"></select></td>
 <td><input type="number" style="width:100px;"  ng-model="p.year"/></td>
 </tr>
 </table>
 <br/>
-
-  <h5 style="color:white;text-align:center;">select subject</h5> 
-<table border="1" align="center" >
+<span style="margin-left:30%;"> 
+<button onclick="autosubject();">auto subject input</button>
+<button onclick="manualsubject();">manual subject input</button>
+</span> <br/> <br/>
+<table border="1"  id="ainput" style="margin-left:20%;">
 <tr>
 <th style="background-color:blue;">subject code*</th>
 <th style="background-color:blue;">sub name*</th>
@@ -700,8 +851,31 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 
 </tr>
 <tr>
-<td><input type="number" style="width:100px;"  ng-model="p.subcode"/></td>
-<td><input type="text"  ng-model="p.subname"/></td>
+<td>
+<div ng-if="subj.length<2">
+<input type="text"  ng-model="p.subcode" />
+<br/>
+
+</div>
+<div ng-if="subj.length>1">
+<select ng-options="c  for c in subjects"  ng-model="p.subcode" ng-change="setcode()" ></select>
+</div>
+
+</td>
+
+<td>
+<div ng-if="subj.length<2">
+<input type="text"  ng-model="p.subname" />
+<br/>
+
+</div>
+<div ng-if="subj.length>1">
+<select ng-options="c  for c in subjectsn"  ng-model="p.subname" ng-change="setname()" ></select>
+</div>
+
+
+
+</td>
 
 <td><input type="number"  style="width:70px;"  ng-model="p.tcv" ng-keyup="setmarkcredit()" /></td>
 <td><input type="number"  style="width:70px;"  ng-model="p.tfv" ng-keyup="setmarkcredit()" /></td>
@@ -712,6 +886,34 @@ if(session.getAttribute("user")==null && session.getAttribute("password")==null)
 <td><input type="number"  style="width:70px;"  ng-model="p.fullmark"/></td>
 <td><input type="number"  style="width:70px;"  ng-model="p.credit"/>   
   </td>
+</tr>
+</table>
+
+<table border="1"  id="minput" style="display:none;margin-left:20%;">
+<tr>
+<th style="background-color:blue;">subject code*</th>
+<th style="background-color:blue;">sub name*</th>
+<th style="background-color:blue;">TC*</th>
+<th style="background-color:blue;">TF*</th>
+<th style="background-color:blue;">PC*</th>
+<th style="background-color:blue;">PF*</th>
+<th style="background-color:blue;">total mark*</th>
+<th style="background-color:blue;">credit*</th>
+
+</tr>
+<tr>
+<td>
+<input type="text"  ng-model="p.subcode" /></td>
+<td>
+<input type="text"  ng-model="p.subname" />
+</td>
+<td><input type="number"  style="width:70px;"  ng-model="p.tcv" ng-keyup="setmarkcredit()" /></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.tfv" ng-keyup="setmarkcredit()" /></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.pcv" ng-keyup="setmarkcredit()"/></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.pfv" ng-keyup="setmarkcredit()"/></td>   
+<td><input type="number"  style="width:70px;"  ng-model="p.fullmark"/></td>
+<td><input type="number"  style="width:70px;"  ng-model="p.credit"/>   
+</td>
 </tr>
 </table>
 <br/>
@@ -858,7 +1060,7 @@ PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-
 <table border="1" align="center" >
 <tr ng-if="fdept!=null">
 <th>record no</th>
-<th>Dept & other</th>
+<th>Dept & Sub</th>
 <th>student info</th>
 <th>Set MarkK</th>
 <th>grade</th>
@@ -874,11 +1076,8 @@ PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-
 <b>department::</b><br/>
 {{x.dept}}
 <br/>
-<b>session::</b><br/>
-{{x.session}}
-<br/>
-<b>semester::</b><br/>
-{{x.semester}}
+<b>subject::</b><br/>
+{{x.subname}}
 <br/>
 <b>subcode::</b><br/>
 {{x.subcode}}
@@ -898,17 +1097,22 @@ PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-
 </td>
 
 
-<td  > <b>TC::</b>
-<input  style="width:50%"  type="number"  ng-model="x.tc"  /> 
+<td> 
+<div style="background-color:black;color:white;">
+<b>TC:{{x.tcv}} , TF:{{x.tfv}}</b><br/>
+<b>PC:{{x.pcv}} , PF:{{x.pfv}}</b><br/> </div>
+
+<b>TC::</b>
+<input  style="width:50%"  type="number"  ng-model="x.tc" ng-if="x.tcv>0" /> 
 <br/>
 <b>TF::</b>
-<input style="width:50%"  type="number"  ng-model="x.tf"  /> 
+<input style="width:50%"  type="number"  ng-model="x.tf" ng-if="x.tfv>0"  /> 
 <br/>
 <b>PC::</b>
-<input style="width:50%"  type="number"  ng-model="x.pc" /> 
+<input style="width:50%"  type="number"  ng-model="x.pc" ng-if="x.pcv>0" /> 
 <br/>
 <b>PF::</b>
-<input style="width:50%"  type="number"   ng-model="x.pf"  /> 
+<input style="width:50%"  type="number"   ng-model="x.pf" ng-if="x.pfv>0" />  
 </td>
 
 <td>
@@ -1000,12 +1204,7 @@ PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-
       <br/>
       <button  ng-click="subcod();">submit</button>
       </div> 
-       
-       
-       
-       
-       
-      </div>
+         </div>
 
       <!-- Modal footer -->
       <div class="modal-footer">
@@ -1016,5 +1215,48 @@ PC:-<input type="number" ng-model="fdept[0].pcv" ng-change="marktime2()" /> PF:-
   </div>
 </div>
 
+
+<div id="slm" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+ <!-- Modal content-->
+      <div class="modal-content">
+      <div class="modal-header" style="background-color:gray;">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title"></h4>
+      </div>
+      <div class="modal-body">
+      <b>session:</b><select ng-model="serials2.session"  ng-options="x for x in sch"></select> <br/><br/>
+         <b>department:</b><select ng-model="serials2.department" ng-options="x for x in khan2"></select> <br/><br/>
+            <b>semester:</b><select ng-model="serials2.semester" ng-options="x for x in khan1"></select> <br/><br/>
+<table border="1" align="center" >
+<tr>
+<th>SL NO</th>
+<th>subject code</th>
+<th>add/remove</th>
+</tr>
+
+<tr ng-repeat="sl in orsub">
+<td>{{$index+1}}</td>
+<td><input type="text" ng-model="sl.subcode" /></td>
+<td>
+
+<button ng-click="addsub($index)">(+)</button> 
+<button ng-click="removesub($index)">(-)</button>
+</td>
+</tr>
+</table>
+
+<br/>
+<div align="center" >
+<button class="btn btn-sm" ng-click="setserial()"  style="background-color:white;"><b>save serial</b></button>
+</div>
+<br/>
+ </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" data-dismiss="modal" id="reclose">Close</button>
+</div>
+</div>
+</div>
+</div>
 </body>
 </html>

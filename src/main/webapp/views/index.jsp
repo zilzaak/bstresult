@@ -20,7 +20,7 @@ module.controller("sellcontrol",function($scope,$http){
 	$scope.sch=['2010-11','2011-12','2012-13','2013-14','2014-15','2015-16','2016-17','2017-18','2018-19','2019-20','2020-21',
 		'2021-22','2022-23','2023-24','2024-25','2025-26','2026-27','2027-28','2028-29','2029-30','2030-31','2031-32','2032-33','2033-34'];
 	
-$scope.khan1=['1st','2nd','3rd','4th','5th','6th','7th','8th'];
+$scope.khan1=['FIRST','SECOND','THIRD','FOURTH','FIFTH','SIXTH','SEVENTH','EIGHTH'];
 $scope.examtype=["--","regular","referred","irregular"];
 $scope.khan2=['66 - Computer Technology','64 - Civil Technology','67 - Electrical Technology',"any"];
 
@@ -211,5 +211,8 @@ background-color:steelblue;
 </table> 
 </div>
 </div>
+
+
+
 </body>
 </html>

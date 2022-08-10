@@ -585,10 +585,6 @@ text-align:center;
 </div>
 
 
-
-
-
-
 <!--  admin register form  pop up  -->
 
 <div id="myModal" class="modal fade" role="dialog">
