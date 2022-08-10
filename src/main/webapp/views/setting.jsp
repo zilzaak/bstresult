@@ -7,9 +7,9 @@
 <title>student result</title>
 </head>
 <body>
-
-
 <div style="margin:50px;text-align:center;padding:50px;background-color:darkseagreen;">
+
+
 <br/>
 <h4>add mail</h4>
 <form action="/addmail" method="post">
