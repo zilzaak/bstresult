@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Built-By: pervez
+Build-Jdk: 11.0.9
+Implementation-Title: result
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: result
+Implementation-URL: https://spring.io/projects/spring-boot/result
+Created-By: Maven Integration for Eclipse
+
